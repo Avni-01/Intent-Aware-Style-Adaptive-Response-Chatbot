@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intent-Aware Chatbot</title>
+    <style>
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            src: url(/static/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');
+        }
+
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 700;
+            src: url(/static/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format('woff2');
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000000;
+            color: white;
+        }
+        .container {
+            width: 500px;
+            padding: 2rem;
+            border-radius: 8px;
+            background-color: #483d8b;
+            box-shadow: 0 4px 15px rgba(255, 255, 0, 0.2);
+        }
+        h1 {
+            text-decoration: underline;
+            color: #FFFF00;
+            text-align: center;
+        }
+        textarea, select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #FF69B4;
+            margin-bottom: 1rem;
+            background-color: #1a1a1a;
+            color: white;
+        }
+        select {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            margin-right: 0.5rem;
+            background-color: #FF1493;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #C71585;
+        }
+        .response {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            background-color: #1a1a1a;
+            border: 1px solid #FFFF00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Intent-Aware Chatbot</h1>
+        <textarea id="query" placeholder="Enter your query..."></textarea>
+        <select id="style">
+            <option value="overconfident_genius">Overconfident Genius</option>
+            <option value="nervous_intern">Nervous Intern</option>
+            <option value="sarcastic_reviewer">Sarcastic Reviewer</option>
+            <option value="calm_professor">Calm Professor</option>
+        </select>
+        <button onclick="submitQuery()">Submit</button>
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        async function submitQuery() {
+            const query = document.getElementById('query').value;
+            const style = document.getElementById('style').value;
+            const responseContainer = document.getElementById('response');
+
+            const response = await fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query, style })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                responseContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+            } else {
+                responseContainer.innerHTML = `
+                    <p><strong>Intent:</strong> ${data.intent}</p>
+                    <p><strong>Response:</strong> ${data.response}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
